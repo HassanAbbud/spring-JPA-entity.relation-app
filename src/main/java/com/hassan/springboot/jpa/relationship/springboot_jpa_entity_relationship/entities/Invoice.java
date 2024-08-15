@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+// import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
@@ -19,6 +20,7 @@ public class Invoice {
     private Long total;
 
     //Many invoices to one client
+    // @JoinColumn(name = "id_client_temp")
     @ManyToOne
     private Client client;
 
