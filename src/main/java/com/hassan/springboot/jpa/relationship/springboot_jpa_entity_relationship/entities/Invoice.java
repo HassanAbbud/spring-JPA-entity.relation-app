@@ -21,7 +21,7 @@ public class Invoice {
     //Many invoices to one client
     @ManyToOne
     private Client client;
-    
+
     public Invoice() {
     }
 
@@ -52,6 +52,14 @@ public class Invoice {
 
     public void setTotal(Long total) {
         this.total = total;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
     }
 
     @Override
