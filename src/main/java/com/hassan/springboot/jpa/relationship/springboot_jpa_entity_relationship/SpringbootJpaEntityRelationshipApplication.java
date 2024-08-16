@@ -31,7 +31,7 @@ public class SpringbootJpaEntityRelationshipApplication implements CommandLineRu
 
 	@Override
 	public void run(String... args) throws Exception {
-		oneToManyInvoiceBidirectionalFindById();
+		removeInvoiceBidirectionalFindById();
 		// removeClientById(3L);
 	}
 
@@ -201,6 +201,37 @@ public class SpringbootJpaEntityRelationshipApplication implements CommandLineRu
 			clientRepository.save(client);
 	
 			System.out.println(client);
+		});
+	}
+
+	@Transactional
+	public void removeInvoiceBidirectionalFindById() {
+		Optional<Client> optionalClient = clientRepository.findOne(1L);
+
+		optionalClient.ifPresent(client -> {
+
+			Invoice invoice1 = new Invoice("House expenses", 5000L);
+			Invoice invoice2 = new Invoice("Office expenses", 8000L);
+
+			client.addInvoice(invoice1).addInvoice(invoice2);
+
+			clientRepository.save(client);
+
+			System.out.println(client);
+		});
+
+		Optional<Client> optionalClientDb = clientRepository.findOne(1L);
+
+		optionalClientDb.ifPresent(client -> {
+			// Invoice invoice3 = new Invoice("House expenses", 5000L);
+			// invoice3.setId(1L);
+
+			Optional<Invoice> invoiceOptional = invoiceRepository.findById(1L);
+			invoiceOptional.ifPresent(invoice -> {
+				client.removeInvoice(invoice);
+				clientRepository.save(client);
+				System.out.println(client);
+			});
 		});
 	}
 }
