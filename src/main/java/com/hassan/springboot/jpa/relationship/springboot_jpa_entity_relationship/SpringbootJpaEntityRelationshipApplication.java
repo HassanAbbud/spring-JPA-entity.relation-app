@@ -1,7 +1,8 @@
 package com.hassan.springboot.jpa.relationship.springboot_jpa_entity_relationship;
 
-import java.util.Arrays;
 import java.util.Optional;
+import java.util.Set;
+import java.util.HashSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -30,7 +31,7 @@ public class SpringbootJpaEntityRelationshipApplication implements CommandLineRu
 
 	@Override
 	public void run(String... args) throws Exception {
-		oneToManyInvoiceBidirectional();
+		oneToManyInvoiceBidirectionalFindById();
 		// removeClientById(3L);
 	}
 
@@ -96,7 +97,10 @@ public class SpringbootJpaEntityRelationshipApplication implements CommandLineRu
 			Address address2 = new Address("Mr. Road Dr.", 1234);
 			//This way ensures theres no failed to lazy init. Directly assign during transaction
 			//get method will throw error because client only had id and will not know attribute address
-			client.setAddresses(Arrays.asList(address1, address2));
+			Set<Address> addresses = new HashSet<>();
+			addresses.add(address1);
+			addresses.add(address2);
+			client.setAddresses(addresses);
 	
 			//save to db 
 			clientRepository.save(client);
@@ -113,7 +117,10 @@ public class SpringbootJpaEntityRelationshipApplication implements CommandLineRu
 		Address address1 = new Address("Sir. Street Dr.", 4312);
 		Address address2 = new Address("Mr. Road Dr.", 1234);
 		
-		client.setAddresses(Arrays.asList(address1, address2));
+		Set<Address> addresses = new HashSet<>();
+		addresses.add(address1);
+		addresses.add(address2);
+		client.setAddresses(addresses);
 
 		//save to db 
 		clientRepository.save(client);
@@ -133,17 +140,35 @@ public class SpringbootJpaEntityRelationshipApplication implements CommandLineRu
 
 	@Transactional
 	public void removeAddressByCustomQuery(){
-		oneToManyFindById();
-		Optional<Client> optionalClient2 = clientRepository.findOne(2L);
+		//This only consults the ID and not other attributes (lazy)
+		Optional<Client> optionalClient = clientRepository.findById(2L);
 
-		optionalClient2.ifPresent(selectedClient -> {
-			selectedClient.getAddresses().remove(0);
-
-			clientRepository.save(selectedClient);
-			System.out.println(selectedClient);
+		optionalClient.ifPresent(client -> {
+			Address address1 = new Address("Sir. Street Dr.", 4312);
+			Address address2 = new Address("Mr. Road Dr.", 1234);
+			//This way ensures theres no failed to lazy init. Directly assign during transaction
+			//get method will throw error because client only had id and will not know attribute address
+			Set<Address> addresses = new HashSet<>();
+			addresses.add(address1);
+			addresses.add(address2);
+			client.setAddresses(addresses);
+	
+			//save to db 
+			clientRepository.save(client);
+	
+			System.out.println(client);
+			Optional<Client> optionalClient2 = clientRepository.findOneWithAddresses(2L);
+	
+			optionalClient2.ifPresent(selectedClient -> {
+				selectedClient.getAddresses().remove(address1);
+	
+				clientRepository.save(selectedClient);
+				System.out.println(selectedClient);
+			});
 		});
 	}
 
+	// create and set bidirectional Client with invoices containing client IDs
 	@Transactional
 	public void oneToManyInvoiceBidirectional(){
 		Client client = new Client("Alex", "River");
@@ -158,6 +183,24 @@ public class SpringbootJpaEntityRelationshipApplication implements CommandLineRu
 		clientRepository.save(client);
 
 		System.out.println(client);
+	}
 
+	// Find Client by ID and add invoices containing its client IDs
+	@Transactional 
+	public void oneToManyInvoiceBidirectionalFindById(){
+		// Fetched with both invoices and addresses to print result and avoid LazyInitializationException 
+		Optional<Client> optionalClient = clientRepository.findOne(1L);
+
+		optionalClient.ifPresent(client -> {
+	
+			Invoice invoice1 = new Invoice("House electricity", 200L);
+			Invoice invoice2 = new Invoice("Water Service", 500L);
+	
+			client.addInvoice(invoice1).addInvoice(invoice2);
+	
+			clientRepository.save(client);
+	
+			System.out.println(client);
+		});
 	}
 }

@@ -1,7 +1,7 @@
 package com.hassan.springboot.jpa.relationship.springboot_jpa_entity_relationship.entities;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -36,11 +36,11 @@ public class Client {
         inverseJoinColumns = @JoinColumn(name="address_id"),
         uniqueConstraints = @UniqueConstraint(columnNames = {"address_id"})
     )
-    private List<Address> addresses = new ArrayList<>();
+    private Set<Address> addresses = new HashSet<>();
 
     // inverse relationship with invoice
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "client")
-    List<Invoice> invoices = new ArrayList<>();
+    Set<Invoice> invoices = new HashSet<>();
 
     public Client() {
     }
@@ -74,26 +74,27 @@ public class Client {
         this.lastName = lastName;
     }
     
-    public List<Address> getAddresses() {
+    public Set<Address> getAddresses() {
         return addresses;
     }
 
-    public void setAddresses(List<Address> addresses) {
+    public void setAddresses(Set<Address> addresses) {
         this.addresses = addresses;
     }
 
-    public List<Invoice> getInvoices() {
+    public Set<Invoice> getInvoices() {
         return invoices;
     }
 
-    public void setInvoices(List<Invoice> invoices) {
+    public void setInvoices(Set<Invoice> invoices) {
         this.invoices = invoices;
     }
 
     // Assign an invoice to this client entity
-    public void addInvoice(Invoice invoice){
+    public Client addInvoice(Invoice invoice){
         invoices.add(invoice);
         invoice.setClient(this);
+        return this;
     }
 
     @Override
