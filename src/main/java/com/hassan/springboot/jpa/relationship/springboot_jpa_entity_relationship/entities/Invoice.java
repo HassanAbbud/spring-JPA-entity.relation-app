@@ -71,7 +71,6 @@ public class Invoice {
         return "Invoice [id=" + id 
         + ", description=" + description 
         + ", total=" + total 
-        + ", client=" + client 
         + "]";
     }
     

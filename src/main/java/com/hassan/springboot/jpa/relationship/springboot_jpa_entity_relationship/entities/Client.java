@@ -82,6 +82,14 @@ public class Client {
         this.addresses = addresses;
     }
 
+    public List<Invoice> getInvoices() {
+        return invoices;
+    }
+
+    public void setInvoices(List<Invoice> invoices) {
+        this.invoices = invoices;
+    }
+
     @Override
     public String toString() {
         return "Client [id=" + id 
@@ -91,7 +99,4 @@ public class Client {
         + ", invoices=" + invoices 
         + "]";
     }
-
-    
-
 }
