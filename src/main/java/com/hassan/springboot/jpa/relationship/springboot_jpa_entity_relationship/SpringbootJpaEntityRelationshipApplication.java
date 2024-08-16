@@ -30,7 +30,7 @@ public class SpringbootJpaEntityRelationshipApplication implements CommandLineRu
 
 	@Override
 	public void run(String... args) throws Exception {
-		removeAddress();
+		removeAddressByCustomQuery();
 	}
 
 	// Create client and assign its ID to an Invoice
@@ -122,5 +122,20 @@ public class SpringbootJpaEntityRelationshipApplication implements CommandLineRu
 			clientRepository.save(selectedClient);
 			System.out.println(client);
 		});
+	}
+
+	@Transactional
+	public void removeAddressByCustomQuery(){
+		oneToManyFindById();
+		Optional<Client> optionalClient2 = clientRepository.findOne(2L);
+
+		optionalClient2.ifPresent(selectedClient -> {
+			selectedClient.getAddresses().remove(0);
+
+			clientRepository.save(selectedClient);
+			System.out.println(selectedClient);
+		});
+
+		
 	}
 }
