@@ -30,7 +30,7 @@ public class SpringbootJpaEntityRelationshipApplication implements CommandLineRu
 
 	@Override
 	public void run(String... args) throws Exception {
-		oneToManyFindById();
+		removeAddress();
 	}
 
 	// Create client and assign its ID to an Invoice
@@ -81,17 +81,45 @@ public class SpringbootJpaEntityRelationshipApplication implements CommandLineRu
 	//Assign addresses to an existing client by ID
 	@Transactional
 	public void oneToManyFindById(){
+		//This only consults the ID and not other attributes (lazy)
 		Optional<Client> optionalClient = clientRepository.findById(2L);
 
 		optionalClient.ifPresent(client -> {
 			Address address1 = new Address("Sir. Street Dr.", 4312);
 			Address address2 = new Address("Mr. Road Dr.", 1234);
 			//This way ensures theres no failed to lazy init. Directly assign during transaction
+			//get method will throw error because client only had id and will not know attribute address
 			client.setAddresses(Arrays.asList(address1, address2));
 	
 			//save to db 
 			clientRepository.save(client);
 	
+			System.out.println(client);
+		});
+	}
+	
+	// Remove address by ID ( app.properties spring.jpa.properties.hibernate.enable_lazy_load_no_trans=true)
+	@Transactional
+	public void removeAddress(){
+		Client client =  new Client("Mike", "Smith");
+		
+		Address address1 = new Address("Sir. Street Dr.", 4312);
+		Address address2 = new Address("Mr. Road Dr.", 1234);
+		
+		client.setAddresses(Arrays.asList(address1, address2));
+
+		//save to db 
+		clientRepository.save(client);
+
+		System.out.println(client);
+
+		Optional<Client> optionalClient = clientRepository.findById(3L);
+
+		optionalClient.ifPresent(selectedClient -> {
+			//This way ensures theres no failed to lazy init. Directly assign during transaction
+			selectedClient.getAddresses().remove(address1);
+
+			clientRepository.save(selectedClient);
 			System.out.println(client);
 		});
 	}
