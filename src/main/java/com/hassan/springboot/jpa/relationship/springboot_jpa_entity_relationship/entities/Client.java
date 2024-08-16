@@ -10,8 +10,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 @Entity
 @Table(name="clients")
@@ -26,8 +28,14 @@ public class Client {
     private String lastName;
 
     // One client has many addresses
+    // @JoinColumn(name = "client_id")
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "client_id")
+    @JoinTable(
+        name = "tbl_clients_to_addresses", 
+        joinColumns = @JoinColumn(name= "client_id"),
+        inverseJoinColumns = @JoinColumn(name="address_id"),
+        uniqueConstraints = @UniqueConstraint(columnNames = {"address_id"})
+    )
     private List<Address> addresses = new ArrayList<>();
 
     public Client() {
