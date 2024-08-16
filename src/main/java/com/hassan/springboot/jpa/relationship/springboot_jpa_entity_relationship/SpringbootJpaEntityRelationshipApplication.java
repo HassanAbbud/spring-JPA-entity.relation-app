@@ -8,6 +8,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.hassan.springboot.jpa.relationship.springboot_jpa_entity_relationship.entities.Address;
 import com.hassan.springboot.jpa.relationship.springboot_jpa_entity_relationship.entities.Client;
 import com.hassan.springboot.jpa.relationship.springboot_jpa_entity_relationship.entities.Invoice;
 import com.hassan.springboot.jpa.relationship.springboot_jpa_entity_relationship.repositories.ClientRepository;
@@ -28,7 +29,7 @@ public class SpringbootJpaEntityRelationshipApplication implements CommandLineRu
 
 	@Override
 	public void run(String... args) throws Exception {
-		manyToOneFindClientById();
+		oneToMany();
 	}
 
 	// Create client and assign its ID to an Invoice
@@ -57,6 +58,22 @@ public class SpringbootJpaEntityRelationshipApplication implements CommandLineRu
 			invoiceRepository.save(invoice); 
 			System.out.println(invoice);
 		}
+	}
+
+	@Transactional
+	public void oneToMany(){
+		Client client =  new Client("Mike", "Smith");
+		
+		Address address1 = new Address("Sir. Street Dr.", 4312);
+		Address address2 = new Address("Mr. Road Dr.", 1234);
+		
+		client.getAddresses().add(address1);
+		client.getAddresses().add(address2);
+
+		//save to db 
+		clientRepository.save(client);
+
+		System.out.println(client);
 	}
 
 }

@@ -1,5 +1,6 @@
 package com.hassan.springboot.jpa.relationship.springboot_jpa_entity_relationship.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -25,7 +26,7 @@ public class Client {
 
     // One client has many addresses
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Address> addresses;
+    private List<Address> addresses = new ArrayList<>();
 
     public Client() {
     }
