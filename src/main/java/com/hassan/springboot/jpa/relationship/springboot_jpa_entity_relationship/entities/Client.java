@@ -38,6 +38,10 @@ public class Client {
     )
     private List<Address> addresses = new ArrayList<>();
 
+    // inverse relationship with invoice
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "client")
+    List<Invoice> invoices = new ArrayList<>();
+
     public Client() {
     }
 
@@ -80,7 +84,12 @@ public class Client {
 
     @Override
     public String toString() {
-        return "Client [id=" + id + ", name=" + name + ", lastName=" + lastName + ", addresses=" + addresses + "]";
+        return "Client [id=" + id 
+        + ", name=" + name 
+        + ", lastName=" + lastName 
+        + ", addresses=" + addresses
+        + ", invoices=" + invoices 
+        + "]";
     }
 
     

@@ -135,7 +135,5 @@ public class SpringbootJpaEntityRelationshipApplication implements CommandLineRu
 			clientRepository.save(selectedClient);
 			System.out.println(selectedClient);
 		});
-
-		
 	}
 }
