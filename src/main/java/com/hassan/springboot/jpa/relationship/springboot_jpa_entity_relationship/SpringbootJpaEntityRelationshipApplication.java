@@ -1,8 +1,6 @@
 package com.hassan.springboot.jpa.relationship.springboot_jpa_entity_relationship;
 
 import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -153,15 +151,9 @@ public class SpringbootJpaEntityRelationshipApplication implements CommandLineRu
 		Invoice invoice1 = new Invoice("House rent", 2000L);
 		Invoice invoice2 = new Invoice("Water service", 500L);
 
-		//Set bidirectional attributes on client
-		List<Invoice> invoices = new ArrayList<>();
-		invoices.add(invoice1);
-		invoices.add(invoice2);
-		client.setInvoices(invoices);
-
-		//Set bidirectional attributes on invoices 
-		invoice1.setClient(client);
-		invoice2.setClient(client);
+		//Set bidirectional attributes on client and invoice
+		client.addInvoice(invoice1);
+		client.addInvoice(invoice2);
 
 		clientRepository.save(client);
 

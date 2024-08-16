@@ -90,6 +90,12 @@ public class Client {
         this.invoices = invoices;
     }
 
+    // Assign an invoice to this client entity
+    public void addInvoice(Invoice invoice){
+        invoices.add(invoice);
+        invoice.setClient(this);
+    }
+
     @Override
     public String toString() {
         return "Client [id=" + id 
