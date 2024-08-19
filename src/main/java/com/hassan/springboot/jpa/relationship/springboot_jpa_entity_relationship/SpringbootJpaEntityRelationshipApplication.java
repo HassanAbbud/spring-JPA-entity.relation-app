@@ -43,7 +43,7 @@ public class SpringbootJpaEntityRelationshipApplication implements CommandLineRu
 
 	@Override
 	public void run(String... args) throws Exception {
-		manyToMany();
+		manyToManyFindById();
 		// removeClientById(3L);
 	}
 
@@ -304,5 +304,19 @@ public class SpringbootJpaEntityRelationshipApplication implements CommandLineRu
 		System.out.println(student1);
 		System.out.println(student2);
 	}
+	
+	@Transactional
+	public void manyToManyFindById(){
+		Optional<Student> optionalStudent =  studentRepository.findById(2L);
 
+		optionalStudent.ifPresent(student -> {
+			Course course1 = new Course("Design of minimal systems", "Raime");
+			Course course2 = new Course("Introduction to cybersecurity", "George");
+			
+			student.setCourse(Set.of(course1, course2));
+			studentRepository.save(student);
+
+			System.out.println(student);
+		});
+	}
 }

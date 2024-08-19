@@ -9,8 +9,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 @Entity
 @Table(name = "students")
@@ -26,6 +29,10 @@ public class Student {
     private String lastName;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE })
+    @JoinTable(name = "tbl_student_courses", 
+        joinColumns = @JoinColumn(name = "student_id"), 
+        inverseJoinColumns = @JoinColumn(name = "course_id"),
+        uniqueConstraints = @UniqueConstraint(columnNames = {"student_id", "course_id"}))
     private Set<Course> course = new HashSet<>();
 
     public Student() {
