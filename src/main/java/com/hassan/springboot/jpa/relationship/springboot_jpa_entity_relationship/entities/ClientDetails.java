@@ -19,7 +19,7 @@ public class ClientDetails {
     private Integer points;
 
     @OneToOne
-    @JoinColumn(name="client_details_id")
+    @JoinColumn(name="client_id")
     private Client client;
 
     public ClientDetails() {

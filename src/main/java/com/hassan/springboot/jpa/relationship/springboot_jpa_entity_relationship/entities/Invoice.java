@@ -21,7 +21,6 @@ public class Invoice {
     private Long total;
 
     //Many invoices to one client
-    // Owner of association (has foreign key)
     @ManyToOne
     @JoinColumn(name = "client_id")
     private Client client;

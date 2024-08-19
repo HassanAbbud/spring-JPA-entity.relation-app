@@ -3,6 +3,7 @@ package com.hassan.springboot.jpa.relationship.springboot_jpa_entity_relationshi
 import java.util.Optional;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -13,10 +14,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.hassan.springboot.jpa.relationship.springboot_jpa_entity_relationship.entities.Address;
 import com.hassan.springboot.jpa.relationship.springboot_jpa_entity_relationship.entities.Client;
 import com.hassan.springboot.jpa.relationship.springboot_jpa_entity_relationship.entities.ClientDetails;
+import com.hassan.springboot.jpa.relationship.springboot_jpa_entity_relationship.entities.Course;
 import com.hassan.springboot.jpa.relationship.springboot_jpa_entity_relationship.entities.Invoice;
+import com.hassan.springboot.jpa.relationship.springboot_jpa_entity_relationship.entities.Student;
 import com.hassan.springboot.jpa.relationship.springboot_jpa_entity_relationship.repositories.ClientDetailsRepository;
 import com.hassan.springboot.jpa.relationship.springboot_jpa_entity_relationship.repositories.ClientRepository;
 import com.hassan.springboot.jpa.relationship.springboot_jpa_entity_relationship.repositories.InvoiceRepository;
+import com.hassan.springboot.jpa.relationship.springboot_jpa_entity_relationship.repositories.StudentRepository;
 
 @SpringBootApplication
 public class SpringbootJpaEntityRelationshipApplication implements CommandLineRunner {
@@ -30,13 +34,16 @@ public class SpringbootJpaEntityRelationshipApplication implements CommandLineRu
 	@Autowired
 	private ClientDetailsRepository clientDetailsRepository;
 
+	@Autowired
+	private StudentRepository studentRepository;
+
 	public static void main(String[] args) {
 		SpringApplication.run(SpringbootJpaEntityRelationshipApplication.class, args);
 	}
 
 	@Override
 	public void run(String... args) throws Exception {
-		oneToOneBidirectionalFindById();
+		manyToMany();
 		// removeClientById(3L);
 	}
 
@@ -95,7 +102,7 @@ public class SpringbootJpaEntityRelationshipApplication implements CommandLineRu
 	@Transactional
 	public void oneToManyFindById(){
 		//This only consults the ID and not other attributes (lazy)
-		Optional<Client> optionalClient = clientRepository.findById(2L);
+		Optional<Client> optionalClient = clientRepository.findOne(2L);
 
 		optionalClient.ifPresent(client -> {
 			Address address1 = new Address("Sir. Street Dr.", 4312);
@@ -279,7 +286,23 @@ public class SpringbootJpaEntityRelationshipApplication implements CommandLineRu
 	
 			System.out.println(client);
 		});
-		
-
 	}
+
+	@Transactional
+	public void manyToMany(){
+		Student student1 = new Student("Jose", "Loya");
+		Student student2 = new Student("Santiago", "Arzaga");
+
+		Course course1 = new Course("Design of minimal systems", "Raime");
+		Course course2 = new Course("Introduction to cybersecurity", "George");
+
+		student1.setCourse(Set.of(course1, course2));
+		student2.setCourse(Set.of(course1));
+		
+		studentRepository.saveAll(List.of(student1,student2));
+
+		System.out.println(student1);
+		System.out.println(student2);
+	}
+
 }
