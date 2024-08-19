@@ -19,6 +19,7 @@ import com.hassan.springboot.jpa.relationship.springboot_jpa_entity_relationship
 import com.hassan.springboot.jpa.relationship.springboot_jpa_entity_relationship.entities.Student;
 import com.hassan.springboot.jpa.relationship.springboot_jpa_entity_relationship.repositories.ClientDetailsRepository;
 import com.hassan.springboot.jpa.relationship.springboot_jpa_entity_relationship.repositories.ClientRepository;
+import com.hassan.springboot.jpa.relationship.springboot_jpa_entity_relationship.repositories.CourseRepository;
 import com.hassan.springboot.jpa.relationship.springboot_jpa_entity_relationship.repositories.InvoiceRepository;
 import com.hassan.springboot.jpa.relationship.springboot_jpa_entity_relationship.repositories.StudentRepository;
 
@@ -37,13 +38,16 @@ public class SpringbootJpaEntityRelationshipApplication implements CommandLineRu
 	@Autowired
 	private StudentRepository studentRepository;
 
+	@Autowired
+	private CourseRepository courseRepository;
+
 	public static void main(String[] args) {
 		SpringApplication.run(SpringbootJpaEntityRelationshipApplication.class, args);
 	}
 
 	@Override
 	public void run(String... args) throws Exception {
-		manyToManyFindById();
+		manyToManyRemoveFind();
 		// removeClientById(3L);
 	}
 
@@ -296,8 +300,8 @@ public class SpringbootJpaEntityRelationshipApplication implements CommandLineRu
 		Course course1 = new Course("Design of minimal systems", "Raime");
 		Course course2 = new Course("Introduction to cybersecurity", "George");
 
-		student1.setCourse(Set.of(course1, course2));
-		student2.setCourse(Set.of(course1));
+		student1.setCourses(Set.of(course1, course2));
+		student2.setCourses(Set.of(course1));
 		
 		studentRepository.saveAll(List.of(student1,student2));
 
@@ -313,10 +317,38 @@ public class SpringbootJpaEntityRelationshipApplication implements CommandLineRu
 			Course course1 = new Course("Design of minimal systems", "Raime");
 			Course course2 = new Course("Introduction to cybersecurity", "George");
 			
-			student.setCourse(Set.of(course1, course2));
+			student.setCourses(Set.of(course1, course2));
 			studentRepository.save(student);
 
 			System.out.println(student);
+		});
+	}
+	
+	@Transactional
+	public void manyToManyRemoveFind(){
+		Optional<Student> optionalStudent =  studentRepository.findOneWithCourses(2L);
+
+		optionalStudent.ifPresent(student -> {
+			Course course1 = new Course("Design of minimal systems", "Raime");
+			Course course2 = new Course("Introduction to cybersecurity", "George");
+			
+			student.setCourses(Set.of(course1, course2));
+			studentRepository.save(student);
+
+			System.out.println(student);
+		});
+
+		Optional<Student> optionalStudentDb =  studentRepository.findOneWithCourses(2L);
+		optionalStudentDb.ifPresent(studentDb -> {
+			Optional<Course> courseOptionalDb = courseRepository.findById(1L);
+
+			courseOptionalDb.ifPresent(courseDb -> {
+				studentDb.getCourses().remove(courseDb);
+
+				studentRepository.save(studentDb);
+
+				System.out.println(studentDb);
+			});
 		});
 	}
 }

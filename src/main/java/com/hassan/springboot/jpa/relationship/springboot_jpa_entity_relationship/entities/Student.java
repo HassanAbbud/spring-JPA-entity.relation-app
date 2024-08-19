@@ -33,7 +33,7 @@ public class Student {
         joinColumns = @JoinColumn(name = "student_id"), 
         inverseJoinColumns = @JoinColumn(name = "course_id"),
         uniqueConstraints = @UniqueConstraint(columnNames = {"student_id", "course_id"}))
-    private Set<Course> course = new HashSet<>();
+    private Set<Course> courses = new HashSet<>();
 
     public Student() {
     }
@@ -67,12 +67,12 @@ public class Student {
         this.lastName = lastName;
     }
 
-    public Set<Course> getCourse() {
-        return course;
+    public Set<Course> getCourses() {
+        return courses;
     }
 
-    public void setCourse(Set<Course> course) {
-        this.course = course;
+    public void setCourses(Set<Course> course) {
+        this.courses = course;
     }
 
     @Override
@@ -80,7 +80,52 @@ public class Student {
         return "Student [id=" + id 
         + ", name=" + name 
         + ", lastName=" + lastName 
-        + ", course=" + course 
+        + ", course=" + courses
         + "]";
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((lastName == null) ? 0 : lastName.hashCode());
+        result = prime * result + ((courses == null) ? 0 : courses.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Student other = (Student) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        if (name == null) {
+            if (other.name != null)
+                return false;
+        } else if (!name.equals(other.name))
+            return false;
+        if (lastName == null) {
+            if (other.lastName != null)
+                return false;
+        } else if (!lastName.equals(other.lastName))
+            return false;
+        if (courses == null) {
+            if (other.courses != null)
+                return false;
+        } else if (!courses.equals(other.courses))
+            return false;
+        return true;
+    }
+
+    
 }
