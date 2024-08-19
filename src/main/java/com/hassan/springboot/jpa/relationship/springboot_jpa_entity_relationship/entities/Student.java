@@ -75,6 +75,16 @@ public class Student {
         this.courses = course;
     }
 
+    public void addCourse(Course course){
+        this.courses.add(course);
+        course.getStudents().add(this);
+    }
+    
+    public void removeCourse(Course course){
+        this.courses.remove(course);
+        course.getStudents().remove(this);
+    }
+
     @Override
     public String toString() {
         return "Student [id=" + id 
@@ -91,7 +101,6 @@ public class Student {
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         result = prime * result + ((name == null) ? 0 : name.hashCode());
         result = prime * result + ((lastName == null) ? 0 : lastName.hashCode());
-        result = prime * result + ((courses == null) ? 0 : courses.hashCode());
         return result;
     }
 
@@ -119,13 +128,7 @@ public class Student {
                 return false;
         } else if (!lastName.equals(other.lastName))
             return false;
-        if (courses == null) {
-            if (other.courses != null)
-                return false;
-        } else if (!courses.equals(other.courses))
-            return false;
         return true;
     }
 
-    
 }

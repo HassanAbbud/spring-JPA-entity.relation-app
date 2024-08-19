@@ -3,13 +3,11 @@ package com.hassan.springboot.jpa.relationship.springboot_jpa_entity_relationshi
 import java.util.HashSet;
 import java.util.Set;
 
-import org.hibernate.annotations.ManyToAny;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
@@ -25,8 +23,8 @@ public class Course {
 
     private String instructor;
     
-    // @ManyToMany
-    // private Set<Student> students = new HashSet<>();
+    @ManyToMany( mappedBy = "courses")
+    private Set<Student> students = new HashSet<>();
 
     public Course() {
     }
@@ -60,13 +58,13 @@ public class Course {
         this.instructor = teacher;
     }
 
-    // public Set<Student> getStudents() {
-    //     return students;
-    // }
+    public Set<Student> getStudents() {
+        return students;
+    }
 
-    // public void setStudents(Set<Student> students) {
-    //     this.students = students;
-    // }
+    public void setStudents(Set<Student> students) {
+        this.students = students;
+    }
 
     @Override
     public String toString() {
@@ -112,6 +110,6 @@ public class Course {
             return false;
         return true;
     }
-
     
+
 }

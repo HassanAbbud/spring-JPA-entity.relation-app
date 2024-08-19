@@ -47,7 +47,7 @@ public class SpringbootJpaEntityRelationshipApplication implements CommandLineRu
 
 	@Override
 	public void run(String... args) throws Exception {
-		manyToManyRemoveFind();
+		manyToManyBidirectionalFind();
 		// removeClientById(3L);
 	}
 
@@ -350,5 +350,31 @@ public class SpringbootJpaEntityRelationshipApplication implements CommandLineRu
 				System.out.println(studentDb);
 			});
 		});
+	}
+
+	@Transactional
+	public void manyToManyBidirectionalFind(){
+		Optional<Student> optionalStudent1 = studentRepository.findOneWithCourses(1L);
+		Optional<Student> optionalStudent2 = studentRepository.findOneWithCourses(2L);
+
+		if (optionalStudent1.isPresent() && optionalStudent2.isPresent()) {
+			Student student1 = optionalStudent1.get();	
+			Student student2 = optionalStudent2.get();
+			
+			Optional<Course> optionalCourse1 = courseRepository.findOneWithStudents(1L);
+			Optional<Course> optionalCourse2 = courseRepository.findOneWithStudents(2L);
+			
+			Course course1 = optionalCourse1.get();
+			Course course2 = optionalCourse2.get();
+			
+			student1.addCourse(course1);
+			student1.addCourse(course2);
+			student2.addCourse(course2);
+
+			studentRepository.saveAll(List.of(student1,student2));
+
+			System.out.println(student1);
+			System.out.println(student2);
+		}
 	}
 }
