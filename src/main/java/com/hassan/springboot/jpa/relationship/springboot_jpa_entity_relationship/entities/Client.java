@@ -44,8 +44,7 @@ public class Client {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "client")
     Set<Invoice> invoices = new HashSet<>();
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="client_details_id")
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "client")
     private ClientDetails clientDetails;
 
     public Client() {
@@ -123,6 +122,7 @@ public class Client {
         + ", lastName=" + lastName 
         + ", addresses=" + addresses
         + ", invoices=" + invoices 
+        + ", clientDetails=" + clientDetails 
         + "]";
     }
 

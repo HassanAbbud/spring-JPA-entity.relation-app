@@ -36,7 +36,7 @@ public class SpringbootJpaEntityRelationshipApplication implements CommandLineRu
 
 	@Override
 	public void run(String... args) throws Exception {
-		oneToOne();
+		oneToOneBidirectionalFindById();
 		// removeClientById(3L);
 	}
 
@@ -250,5 +250,36 @@ public class SpringbootJpaEntityRelationshipApplication implements CommandLineRu
 		clientRepository.save(client);
 
 		System.out.println(client);
+	}
+
+	@Transactional
+	public void oneToOneBidirectional(){
+		Client client = new Client("Chris", "Christian");
+
+		ClientDetails clientDetails = new ClientDetails(true, 2000);
+
+		client.setClientDetails(clientDetails);
+		clientDetails.setClient(client);
+
+		clientRepository.save(client);
+
+		System.out.println(client);
+	}
+
+	@Transactional
+	public void oneToOneBidirectionalFindById(){
+		Optional<Client> optionalClient = clientRepository.findOne(2L);
+
+		optionalClient.ifPresent(client -> {
+			ClientDetails clientDetails = new ClientDetails(true, 2000);
+			client.setClientDetails(clientDetails);
+			clientDetails.setClient(client);
+			
+			clientRepository.save(client);
+	
+			System.out.println(client);
+		});
+		
+
 	}
 }
