@@ -6,12 +6,14 @@ import java.util.HashSet;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
@@ -41,6 +43,10 @@ public class Client {
     // inverse relationship with invoice
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "client")
     Set<Invoice> invoices = new HashSet<>();
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="client_details_id")
+    private ClientDetails clientDetails;
 
     public Client() {
     }
@@ -90,6 +96,14 @@ public class Client {
         this.invoices = invoices;
     }
 
+    public ClientDetails getClientDetails() {
+        return clientDetails;
+    }
+
+    public void setClientDetails(ClientDetails clientDetails) {
+        this.clientDetails = clientDetails;
+    }
+    
     // Assign an invoice to this client entity
     public Client addInvoice(Invoice invoice){
         invoices.add(invoice);
@@ -111,4 +125,5 @@ public class Client {
         + ", invoices=" + invoices 
         + "]";
     }
+
 }

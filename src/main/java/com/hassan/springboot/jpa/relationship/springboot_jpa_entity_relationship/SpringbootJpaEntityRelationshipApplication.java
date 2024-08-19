@@ -12,7 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.hassan.springboot.jpa.relationship.springboot_jpa_entity_relationship.entities.Address;
 import com.hassan.springboot.jpa.relationship.springboot_jpa_entity_relationship.entities.Client;
+import com.hassan.springboot.jpa.relationship.springboot_jpa_entity_relationship.entities.ClientDetails;
 import com.hassan.springboot.jpa.relationship.springboot_jpa_entity_relationship.entities.Invoice;
+import com.hassan.springboot.jpa.relationship.springboot_jpa_entity_relationship.repositories.ClientDetailsRepository;
 import com.hassan.springboot.jpa.relationship.springboot_jpa_entity_relationship.repositories.ClientRepository;
 import com.hassan.springboot.jpa.relationship.springboot_jpa_entity_relationship.repositories.InvoiceRepository;
 
@@ -25,13 +27,16 @@ public class SpringbootJpaEntityRelationshipApplication implements CommandLineRu
 	@Autowired
 	private InvoiceRepository invoiceRepository; 
 
+	@Autowired
+	private ClientDetailsRepository clientDetailsRepository;
+
 	public static void main(String[] args) {
 		SpringApplication.run(SpringbootJpaEntityRelationshipApplication.class, args);
 	}
 
 	@Override
 	public void run(String... args) throws Exception {
-		removeInvoiceBidirectionalFindById();
+		oneToOne();
 		// removeClientById(3L);
 	}
 
@@ -233,5 +238,17 @@ public class SpringbootJpaEntityRelationshipApplication implements CommandLineRu
 				System.out.println(client);
 			});
 		});
+	}
+
+	@Transactional
+	public void oneToOne() {
+		ClientDetails clientDetails = new ClientDetails(true, 5000);
+		clientDetailsRepository.save(clientDetails);
+		
+		Client client = new Client("Joseph", "Joestar");
+		client.setClientDetails(clientDetails);
+		clientRepository.save(client);
+
+		System.out.println(client);
 	}
 }
